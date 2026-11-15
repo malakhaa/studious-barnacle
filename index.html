@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Liquid Glass Remote</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f0f13;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #1a1a24 0%, #000000 100%);
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .remote-container {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 40px 10px 20px 10px;
+        }
+        
+        .power-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.15);
+            border: 2px solid rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4), inset 0 0 15px rgba(255, 0, 0, 0.2);
+            color: #ff4d4d;
+            font-size: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            padding: 0 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 22px 0;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .play-pause {
+            grid-column: 2;
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-anim 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-anim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        .floating-text {
+            position: absolute;
+            color: #00e5ff;
+            font-weight: bold;
+            font-size: 24px;
+            pointer-events: none;
+            opacity: 1;
+            animation: floatUp 1s ease-out forwards;
+            text-shadow: 0 0 10px #00e5ff;
+            z-index: 100;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translate(-50%, -50%); opacity: 1; }
+            100% { transform: translate(-50%, -150px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="remote-container">
+        <div id="float-container" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:50;"></div>
+
+        <div class="power-btn" onclick="sendSignal('Power', '0x1FE48B7', event)">⏻</div>
+
+        <div class="grid-container">
+            <div class="btn" onclick="sendSignal('MODE', '0x1FE58A7', event)">MODE</div>
+            <div class="btn play-pause" onclick="sendSignal('Play/Pause', '0x1FE807F', event)">▶/⏸</div>
+            <div class="btn" onclick="sendSignal('MUTE', '0x1FE7887', event)">MUTE</div>
+            
+            <div class="btn" onclick="sendSignal('Prev', '0x1FE40BF', event)">|◁◁</div>
+            <div class="btn" onclick="sendSignal('EQ', '0x1FE20DF', event)">EQ</div>
+            <div class="btn" onclick="sendSignal('Next', '0x1FEC03F', event)">▷▷|</div>
+            
+            <div class="btn" onclick="sendSignal('VOL -', '0x1FEA05F', event)">VOL -</div>
+            <div class="btn" onclick="sendSignal('SCN', '0x1FE906F', event)">SCN</div>
+            <div class="btn" onclick="sendSignal('VOL +', '0x1FE609F', event)">VOL +</div>
+
+            <div class="btn" onclick="sendSignal('1', '0x1FE50AF', event)">1</div>
+            <div class="btn" onclick="sendSignal('2', '0x1FED827', event)">2</div>
+            <div class="btn" onclick="sendSignal('3', '0x1FEF807', event)">3</div>
+
+            <div class="btn" onclick="sendSignal('4', '0x1FE30CF', event)">4</div>
+            <div class="btn" onclick="sendSignal('5', '0x1FEB04F', event)">5</div>
+            <div class="btn" onclick="sendSignal('6', '0x1FE708F', event)">6</div>
+
+            <div class="btn" onclick="sendSignal('7', '0x1FE00FF', event)">7</div>
+            <div class="btn" onclick="sendSignal('8', '0x1FEF00F', event)">8</div>
+            <div class="btn" onclick="sendSignal('9', '0x1FE9867', event)">9</div>
+
+            <div class="btn" onclick="sendSignal('RPT', '0x1FE10EF', event)">RPT</div>
+            <div class="btn" onclick="sendSignal('0', '0x1FEE01F', event)">0</div>
+        </div>
+    </div>
+
+    <script>
+        function sendSignal(name, code, event) {
+            if (navigator.vibrate) navigator.vibrate(50);
+
+            const btn = event.currentTarget;
+            const circle = document.createElement('span');
+            const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+            const radius = diameter / 2;
+            
+            const rect = btn.getBoundingClientRect();
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - rect.left - radius}px`;
+            circle.style.top = `${event.clientY - rect.top - radius}px`;
+            circle.classList.add('ripple');
+            
+            const existingRipple = btn.querySelector('.ripple');
+            if (existingRipple) existingRipple.remove();
+            btn.appendChild(circle);
+
+            const floatContainer = document.getElementById('float-container');
+            const floatingText = document.createElement('div');
+            floatingText.classList.add('floating-text');
+            floatingText.innerText = name;
+            floatingText.style.left = `${event.clientX}px`;
+            floatingText.style.top = `${event.clientY}px`;
+            
+            floatContainer.appendChild(floatingText);
+            
+            setTimeout(() => { floatingText.remove(); }, 1000);
+        }
+    </script>
+</body>
+</html>
